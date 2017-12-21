@@ -1,23 +1,23 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; 																						  ;;;
-;;; Title    :   8 puzzle solver using a* algorithm.                             			  ;;;
-;;; Problem  :   Implement the A* search for searching trees (in Lisp). Do not 				  ;;;
-;;;          :   use Russell’s code or other code from the web. Implement a 				  ;;;
-;;;          :   counter that counts the number of nodes expanded and prints this			  ;;;
-;;;          :   number at the end of the search. Use your code to solve the 				  ;;;
-;;;          :   8-puzzle problem with heuristic being the number of misplaced 				  ;;;
-;;;          :   tiles and start state ((E, 1, 3),(4, 2, 5),(7, 8,6)). The goal 			  ;;;
-;;;          :   state is: ((1, 2, 3),(4, 5, 6),(7, 8, E)). Print the number of 			  ;;;
-;;;          :   nodes expanded. You only need to show the states generated 				  ;;;
-;;;          :   during the search process. Your code should detect infeasible 				  ;;;
-;;;          :   puzzles.																	  ;;;
-;;; Date     :   Dec 03, 2017																  ;;;
+;;; 											      ;;;											  
+;;; Title    :   8 puzzle solver using a* algorithm.                             	      ;;;
+;;; Problem  :   Implement the A* search for searching trees (in Lisp). Do not 		      ;;;
+;;;          :   use Russell’s code or other code from the web. Implement a 		      ;;;
+;;;          :   counter that counts the number of nodes expanded and prints this	      ;;;
+;;;          :   number at the end of the search. Use your code to solve the 		      ;;;
+;;;          :   8-puzzle problem with heuristic being the number of misplaced 		      ;;;
+;;;          :   tiles and start state ((E, 1, 3),(4, 2, 5),(7, 8,6)). The goal 	      ;;;
+;;;          :   state is: ((1, 2, 3),(4, 5, 6),(7, 8, E)). Print the number of 	      ;;;
+;;;          :   nodes expanded. You only need to show the states generated 		      ;;;
+;;;          :   during the search process. Your code should detect infeasible 		      ;;;
+;;;          :   puzzles.				  				      ;;;
+;;; Date     :   Dec 03, 2017								      ;;;
 ;;; Author   :   Mahendra Maiti	                                                              ;;;
-;;; email	:   maiti013@umn.edu															  ;;;
-;;; Assignment:  Artificial Intelligence CSCI 5511 - Lisp Assignment						  ;;;
-;;; Due Date :   Dec 07, 2017																  ;;;
-;;;																							  ;;;
+;;; email	:   maiti013@umn.edu							      ;;;
+;;; Assignment:  Artificial Intelligence CSCI 5511 - Lisp Assignment			      ;;;
+;;; Due Date :   Dec 07, 2017								      ;;;
+;;;											      ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -36,35 +36,36 @@
 )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;																							  ;;
-;; 	node::  (t1 t2 t3 t4 t5 t6 t7 t8 t9 pos_blank)  										  ;;	
-;;			The 3X3 matrix is represented here as a single list of tile values called 'node'. ;;
-;;			Additionally node containes the position of the blank tile at the end. 			  ;;	
-;; 																							  ;;
-;;																							  ;;	
-;;																							  ;;
-;; 	pos_blank:: represents the position of the blank in the board represented as a list 	  ;;
-;;																							  ;;
-;;	g_val:: represents the g-value at a particular state                                      ;;
-;;																							  ;;
-;;	h_val:: represents the h-value at a particular state                                      ;;
-;;																							  ;;
-;;	f_val:: represents the f-value at a particular state                                      ;;
-;;																							  ;;	
-;;	parent:: represents the parent of a particular state                                      ;;
-;;																							  ;;
+;;											      ;;
+;; 	node::  (t1 t2 t3 t4 t5 t6 t7 t8 t9 pos_blank)  				      ;;	
+;;		The 3X3 matrix is represented here as a single list of tile values            ;;			
+;;		called 'node'. 							              ;;
+;;		Additionally node containes the position of the blank tile at the end.        ;;	
+;; 											      ;;
+;;											      ;;	
+;;											      ;;
+;; 	pos_blank:: represents the position of the blank in the board represented as a list   ;;
+;;											      ;;
+;;	g_val:: represents the g-value at a particular state                                  ;;
+;;											      ;;
+;;	h_val:: represents the h-value at a particular state                                  ;;
+;;											      ;;
+;;	f_val:: represents the f-value at a particular state                                  ;;
+;;											      ;;	
+;;	parent:: represents the parent of a particular state                                  ;;
+;;											      ;;											  ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;declare the goal nodes and start nodes as global variables
 
 (defvar *goal_node* (list '1 '2 '3 '4 '5 '6 '7 '8 '0 '8))
 
-(defvar *start_node* (list '0 '1 '3 '4 '2 '5 '7 '8 '6 '0)) ;;finds solution
-;(defvar *start_node* (list '1 '2 '3 '4 '5 '0 '7 '8 '6 '5))  ;;finds solution
-;(defvar *start_node* (list '1 '2 '0 '4 '5 '3 '7 '8 '6 '2))  ;;finds solution
-;(defvar *start_node* (list '8 '1 '2 '0 '4 '3 '7 '6 '5 '3)) ;;infeasible puzzle
-;(defvar *start_node* (list '4 '5 '6 '0 '1 '2 '7 '8 '6 '3))	;;infeasible puzzle
-;(defvar *start_node* (list '4 '2 '5 '0 '1 '3 '7 '8 '6 '3))	;;finds solution
+(defvar *start_node* (list '0 '1 '3 '4 '2 '5 '7 '8 '6 '0))    ;;finds solution
+;(defvar *start_node* (list '1 '2 '3 '4 '5 '0 '7 '8 '6 '5))   ;;finds solution
+;(defvar *start_node* (list '1 '2 '0 '4 '5 '3 '7 '8 '6 '2))   ;;finds solution
+;(defvar *start_node* (list '8 '1 '2 '0 '4 '3 '7 '6 '5 '3))   ;;infeasible puzzle
+;(defvar *start_node* (list '4 '5 '6 '0 '1 '2 '7 '8 '6 '3))   ;;infeasible puzzle
+;(defvar *start_node* (list '4 '2 '5 '0 '1 '3 '7 '8 '6 '3))   ;;finds solution
 
 
 
