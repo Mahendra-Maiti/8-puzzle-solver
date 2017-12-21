@@ -14,7 +14,7 @@
 ;;;          :   puzzles.				  				      ;;;
 ;;; Date     :   Dec 03, 2017								      ;;;
 ;;; Author   :   Mahendra Maiti	                                                              ;;;
-;;; email	:   maiti013@umn.edu							      ;;;
+;;; email    :   maiti013@umn.edu							      ;;;
 ;;; Assignment:  Artificial Intelligence CSCI 5511 - Lisp Assignment			      ;;;
 ;;; Due Date :   Dec 07, 2017								      ;;;
 ;;;											      ;;;
